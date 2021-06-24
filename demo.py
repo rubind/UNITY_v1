@@ -1,5 +1,5 @@
 import pystan
-import cPickle as pickle
+import pickle
 import numpy as np
 
 
@@ -42,12 +42,15 @@ def init_fn():
             "outl_frac": np.random.random()*0.02 + 0.01
         }
             
-            
 
 ################################################# Main Program ###################################################
 
 
-stan_data = pickle.load(open("stan_data.pickle", 'rb'))
+with open("stan_data.pickle", 'rb') as f:
+    u = pickle._Unpickler(f)
+    u.encoding = 'latin1'
+    stan_data = u.load()
+
 
 fit = pystan.stan(file="stan_code.txt", data=stan_data,
                   iter=50, chains=1, n_jobs = 1, init = init_fn)
